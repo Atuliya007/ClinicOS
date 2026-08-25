@@ -1,10 +1,14 @@
-from sqlalchemy import desc, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.base_repository import BaseRepository
 from app.modules.patients.models import Patient
 
 
-class PatientRepository:
+class PatientRepository(BaseRepository[Patient]):
+
+    def __init__(self):
+        super().__init__(Patient)
 
     def get_by_phone(
         self,
@@ -25,31 +29,8 @@ class PatientRepository:
 
         statement = (
             select(Patient)
-            .order_by(desc(Patient.patient_code))
+            .order_by(Patient.patient_code.desc())
             .limit(1)
         )
 
         return db.scalar(statement)
-
-    def create(
-        self,
-        db: Session,
-        patient: Patient,
-    ) -> Patient:
-
-        db.add(patient)
-        db.commit()
-        db.refresh(patient)
-
-        return patient
-
-    def get_all(
-    self,
-    db: Session,
-    ) -> list[Patient]:
-
-     statement = select(Patient).order_by(
-        Patient.created_at.desc()
-    )
-
-     return list(db.scalars(statement).all())

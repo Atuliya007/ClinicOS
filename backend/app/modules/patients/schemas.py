@@ -35,3 +35,14 @@ class PatientResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
     )
+
+
+class PatientUpdate(BaseModel):
+    first_name: str
+    last_name: str
+    date_of_birth: date
+    gender: Gender
+    phone_number: str
+    email: EmailStr | None = None
+    blood_group: BloodGroup | None = None
+

@@ -1,6 +1,9 @@
+from uuid import UUID
+
+from app.modules.patients.exceptions import PatientNotFoundException
 from app.modules.patients.models import Patient
 from app.modules.patients.repository import PatientRepository
-from app.modules.patients.schemas import PatientCreate
+from app.modules.patients.schemas import PatientCreate, PatientUpdate
 
 
 class PatientService:
@@ -63,3 +66,70 @@ class PatientService:
     ) -> list[Patient]:
 
         return self.repository.get_all(db)
+
+
+    def get_patient_by_id(
+    self,
+    db,
+    patient_id: UUID,
+    ) -> Patient:
+
+        patient = self.repository.get_by_id(
+            db,
+            patient_id,
+        )
+
+        if patient is None:
+            raise PatientNotFoundException()
+
+        return patient
+
+
+    def update_patient(
+    self,
+    db,
+    patient_id: UUID,
+    patient_data: PatientUpdate,
+    ) -> Patient:
+
+     patient = self.repository.get_by_id(
+        db,
+        patient_id,
+    )
+
+     if patient is None:
+        raise PatientNotFoundException()
+
+     patient.first_name = patient_data.first_name
+     patient.last_name = patient_data.last_name
+     patient.date_of_birth = patient_data.date_of_birth
+     patient.gender = patient_data.gender
+     patient.phone_number = patient_data.phone_number
+     patient.email = patient_data.email
+     patient.blood_group = patient_data.blood_group
+
+     return self.repository.update(
+        db,
+        patient,
+    )
+
+
+
+    def delete_patient(
+    self,
+    db,
+    patient_id: UUID,
+    ) -> Patient:
+
+     patient = self.repository.get_by_id(
+        db,
+        patient_id,
+    )
+
+     if patient is None:
+        raise PatientNotFoundException()
+
+     return self.repository.delete(
+        db,
+        patient,
+    )

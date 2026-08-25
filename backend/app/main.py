@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.modules.doctors.api import router as doctor_router
 from app.modules.patients.api import router as patient_router
 
 app = FastAPI(
@@ -8,6 +9,7 @@ app = FastAPI(
 )
 
 app.include_router(patient_router)
+app.include_router(doctor_router)
 
 
 @app.get("/")
