@@ -1,5 +1,4 @@
 from datetime import date
-from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict, EmailStr
 
@@ -12,8 +11,8 @@ class PatientCreate(BaseModel):
     date_of_birth: date
     gender: Gender
     phone_number: str
-    email: Optional[EmailStr] = None
-    blood_group: Optional[BloodGroup] = None
+    email: EmailStr | None = None
+    blood_group: BloodGroup | None = None
 
     model_config = ConfigDict(
         str_strip_whitespace=True,
@@ -28,8 +27,8 @@ class PatientResponse(BaseModel):
     date_of_birth: date
     gender: Gender
     phone_number: str
-    email: Optional[EmailStr]
-    blood_group: Optional[BloodGroup]
+    email: EmailStr | None
+    blood_group: BloodGroup | None
     is_active: bool
 
     model_config = ConfigDict(
@@ -38,11 +37,12 @@ class PatientResponse(BaseModel):
 
 
 class PatientUpdate(BaseModel):
-    first_name: str
-    last_name: str
-    date_of_birth: date
-    gender: Gender
-    phone_number: str
+    first_name: str | None = None
+    last_name: str | None = None
+    date_of_birth: date | None = None
+    gender: Gender | None = None
+    phone_number: str | None = None
     email: EmailStr | None = None
     blood_group: BloodGroup | None = None
+    is_active: bool | None = None
 

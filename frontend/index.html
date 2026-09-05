@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0d716c">
+    <title>ClinicOS | Clinic operations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#dashboard" aria-label="ClinicOS dashboard"><span class="brand-mark">+</span><span>Clinic<span>OS</span></span></a>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="#dashboard" data-route="dashboard"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+          <p class="nav-label">Clinical</p>
+          <a href="#patients" data-route="patients"><i data-lucide="users"></i>Patients</a>
+          <a href="#doctors" data-route="doctors"><i data-lucide="stethoscope"></i>Doctors</a>
+          <a href="#departments" data-route="departments"><i data-lucide="building-2"></i>Departments</a>
+          <a href="#appointments" data-route="appointments"><i data-lucide="calendar-days"></i>Appointments</a>
+          <p class="nav-label">Operations</p>
+          <a href="#receptionists" data-route="receptionists"><i data-lucide="headset"></i>Reception</a>
+          <a href="#laboratory" data-route="laboratory"><i data-lucide="flask-conical"></i>Laboratory</a>
+          <a href="#pharmacy" data-route="pharmacy"><i data-lucide="pill"></i>Pharmacy</a>
+          <a href="#billing" data-route="billing"><i data-lucide="receipt-text"></i>Billing</a>
+          <div class="nav-spacer"></div>
+          <a href="#settings" data-route="settings"><i data-lucide="settings"></i>Settings</a>
+        </nav>
+      </aside>
+      <div class="mobile-backdrop" id="mobile-backdrop"></div>
+      <div class="main-wrap">
+        <header class="topbar">
+          <button class="icon-button mobile-only" id="menu-toggle" aria-label="Open navigation"><i data-lucide="menu"></i></button>
+          <div class="global-search"><i data-lucide="search"></i><input id="global-search" placeholder="Search current page…" aria-label="Search current page"></div>
+          <div class="top-actions"><span class="clinic-time" id="clinic-time"></span><button class="icon-button" aria-label="Notifications"><i data-lucide="bell"></i></button><div class="avatar" aria-label="Current user">CO</div></div>
+        </header>
+        <main id="app" tabindex="-1"></main>
+      </div>
+    </div>
+    <div id="modal-root"></div><div class="toast-region" id="toast-region" aria-live="polite"></div>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script type="module" src="js/app.js?v=20260905-1"></script>
+  </body>
+</html>

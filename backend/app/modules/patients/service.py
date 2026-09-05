@@ -1,135 +1,47 @@
 from uuid import UUID
 
-from app.modules.patients.exceptions import PatientNotFoundException
+from app.modules.patients.exceptions import PatientConflictException, PatientNotFoundException
 from app.modules.patients.models import Patient
 from app.modules.patients.repository import PatientRepository
 from app.modules.patients.schemas import PatientCreate, PatientUpdate
 
 
 class PatientService:
-
-    
     def __init__(self):
         self.repository = PatientRepository()
 
-    def _generate_patient_code(
-        self,
-        latest_patient: Patient | None,
-    ) -> str:
+    def _generate_patient_code(self, latest: Patient | None) -> str:
+        return f"PT{(int(latest.patient_code[-6:]) + 1) if latest else 1:06d}"
 
-        if latest_patient is None:
-            return "PAT000001"
+    def create_patient(self, db, data: PatientCreate) -> Patient:
+        if self.repository.get_by_phone(db, data.phone_number):
+            raise PatientConflictException()
+        latest = self.repository.get_latest_patient(db)
+        patient = Patient(patient_code=self._generate_patient_code(latest), **data.model_dump())
+        return self.repository.create(db, patient)
 
-        number = int(latest_patient.patient_code.replace("PAT", "")) + 1
-
-        return f"PAT{number:06d}"
-
-    def create_patient(
-        self,
-        db,
-        patient_data: PatientCreate,
-    ) -> Patient:
-
-        existing_patient = self.repository.get_by_phone(
-            db,
-            patient_data.phone_number,
-        )
-
-        if existing_patient:
-            return existing_patient
-
-        latest_patient = self.repository.get_latest_patient(db)
-
-        patient_code = self._generate_patient_code(
-            latest_patient
-        )
-
-        patient = Patient(
-            patient_code=patient_code,
-            first_name=patient_data.first_name,
-            last_name=patient_data.last_name,
-            date_of_birth=patient_data.date_of_birth,
-            gender=patient_data.gender,
-            phone_number=patient_data.phone_number,
-            email=patient_data.email,
-            blood_group=patient_data.blood_group,
-        )
-
-        return self.repository.create(
-            db,
-            patient,
-        )
-
-    def get_all_patients(
-    self,
-    db,
-    ) -> list[Patient]:
-
+    def get_all_patients(self, db) -> list[Patient]:
         return self.repository.get_all(db)
 
-
-    def get_patient_by_id(
-    self,
-    db,
-    patient_id: UUID,
-    ) -> Patient:
-
-        patient = self.repository.get_by_id(
-            db,
-            patient_id,
-        )
-
+    def get_patient_by_id(self, db, patient_id: UUID) -> Patient:
+        patient = self.repository.get_by_id(db, patient_id)
         if patient is None:
             raise PatientNotFoundException()
-
         return patient
 
+    def update_patient(self, db, patient_id: UUID, data: PatientUpdate) -> Patient:
+        patient = self.get_patient_by_id(db, patient_id)
+        values = data.model_dump(exclude_unset=True)
+        phone = values.get("phone_number")
+        if phone and phone != patient.phone_number:
+            existing = self.repository.get_by_phone(db, phone)
+            if existing and existing.id != patient.id:
+                raise PatientConflictException()
+        for field, value in values.items():
+            setattr(patient, field, value)
+        return self.repository.update(db, patient)
 
-    def update_patient(
-    self,
-    db,
-    patient_id: UUID,
-    patient_data: PatientUpdate,
-    ) -> Patient:
-
-     patient = self.repository.get_by_id(
-        db,
-        patient_id,
-    )
-
-     if patient is None:
-        raise PatientNotFoundException()
-
-     patient.first_name = patient_data.first_name
-     patient.last_name = patient_data.last_name
-     patient.date_of_birth = patient_data.date_of_birth
-     patient.gender = patient_data.gender
-     patient.phone_number = patient_data.phone_number
-     patient.email = patient_data.email
-     patient.blood_group = patient_data.blood_group
-
-     return self.repository.update(
-        db,
-        patient,
-    )
-
-
-
-    def delete_patient(
-    self,
-    db,
-    patient_id: UUID,
-    ) -> Patient:
-
-     patient = self.repository.get_by_id(
-        db,
-        patient_id,
-    )
-
-     if patient is None:
-        raise PatientNotFoundException()
-
-     return self.repository.delete(
-        db,
-        patient,
-    )
+    def delete_patient(self, db, patient_id: UUID) -> Patient:
+        patient = self.get_patient_by_id(db, patient_id)
+        patient.is_active = False
+        return self.repository.update(db, patient)

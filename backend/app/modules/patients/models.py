@@ -1,17 +1,13 @@
 from datetime import date
-from uuid import UUID, uuid4
-
-from sqlalchemy import Boolean, Date, Enum, String
+from sqlalchemy import Boolean, Date, Enum, Index, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.db.base import Base
 from app.enums.patient import BloodGroup, Gender
 from app.models.base_model import BaseModel
 
 class Patient(BaseModel):
     __tablename__ = "patients"
-
-    
+    __table_args__ = (Index("ix_patients_phone_number", "phone_number", unique=True),)
 
     patient_code: Mapped[str] = mapped_column(
         String(20),

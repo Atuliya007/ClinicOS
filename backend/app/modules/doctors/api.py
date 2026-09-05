@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
@@ -10,6 +10,7 @@ from app.modules.doctors.schemas import (
     DoctorUpdate,
 )
 from app.modules.doctors.service import DoctorService
+from app.enums.doctor import Specialization
 
 
 router = APIRouter(
@@ -23,6 +24,7 @@ service = DoctorService()
 @router.post(
     "",
     response_model=DoctorResponse,
+    status_code=status.HTTP_201_CREATED,
 )
 def create_doctor(
     doctor: DoctorCreate,
@@ -39,9 +41,11 @@ def create_doctor(
     response_model=list[DoctorResponse],
 )
 def get_all_doctors(
+    active: bool | None = Query(default=None),
+    specialization: Specialization | None = Query(default=None),
     db: Session = Depends(get_db),
 ):
-    return service.get_all_doctors(db)
+    return service.get_all_doctors(db, active, specialization)
 
 
 @router.get(
@@ -58,7 +62,7 @@ def get_doctor(
     )
 
 
-@router.put(
+@router.patch(
     "/{doctor_id}",
     response_model=DoctorResponse,
 )

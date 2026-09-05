@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app.db.dependencies import get_db
@@ -20,6 +20,7 @@ service = PatientService()
 @router.post(
     "",
     response_model=PatientResponse,
+    status_code=status.HTTP_201_CREATED,
 )
 def create_patient(
     patient: PatientCreate,
@@ -51,7 +52,7 @@ def get_patient(
     )
 
 
-@router.put(
+@router.patch(
     "/{patient_id}",
     response_model=PatientResponse,
 )

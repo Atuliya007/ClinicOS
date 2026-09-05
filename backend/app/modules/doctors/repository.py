@@ -22,3 +22,14 @@ class DoctorRepository(BaseRepository[Doctor]):
         )
 
         return db.scalar(statement)
+
+    def get_by_phone(self, db: Session, phone_number: str) -> Doctor | None:
+        return db.scalar(select(Doctor).where(Doctor.phone_number == phone_number))
+
+    def get_all_filtered(self, db: Session, active: bool | None = None, specialization=None) -> list[Doctor]:
+        statement = select(Doctor)
+        if active is not None:
+            statement = statement.where(Doctor.is_active == active)
+        if specialization is not None:
+            statement = statement.where(Doctor.specialization == specialization)
+        return list(db.scalars(statement).all())

@@ -7,9 +7,13 @@ from alembic import context
 from app.db.base import Base
 from app.db.config import settings
 from app.modules.patients.models import Patient
-from alembic import context
-from app.db.base import Base
-from app.modules.patients.models import Patient
+from app.modules.doctors.models import Doctor
+from app.modules.receptionists.models import Receptionist
+from app.modules.departments.models import Department
+from app.modules.appointments.models import Appointment
+from app.modules.laboratory.models import LabOrder, LabTest
+from app.modules.pharmacy.models import Medicine, Prescription, PrescriptionItem
+from app.modules.billing.models import Invoice, InvoiceItem, Payment
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

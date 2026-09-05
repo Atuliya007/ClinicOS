@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Enum, Integer, Numeric, String
+from sqlalchemy import Boolean, Enum, Index, Integer, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.enums.doctor import Specialization
@@ -7,6 +7,7 @@ from app.models.base_model import BaseModel
 
 class Doctor(BaseModel):
     __tablename__ = "doctors"
+    __table_args__ = (Index("ix_doctors_phone_number", "phone_number", unique=True),)
 
     doctor_code: Mapped[str] = mapped_column(
         String(20),

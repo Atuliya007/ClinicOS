@@ -1,0 +1,26 @@
+{
+  "name": "clinic-os",
+  "version": "1.0.0",
+  "description": "> A modern, scalable Hospital Management System built with **FastAPI**, **PostgreSQL**, and **Clean Architecture**.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Atuliya007/ClinicOS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Atuliya007/ClinicOS/issues"
+  },
+  "homepage": "https://github.com/Atuliya007/ClinicOS#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.4.1"
+  }
+}
